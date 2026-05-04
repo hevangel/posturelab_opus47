@@ -13,8 +13,10 @@ android/local.properties
 ai-service/models/*.task
 !ai-service/models/.gitkeep
 ai-service/.hf-cache/
+ai-service/models/.hf-cache/
 web/dist/
 .vscode/
 *.log
+*.idea/
 reference/pages/
 reference/extract.py

@@ -10,7 +10,7 @@ Posture analysis for clinic-style reports. Two clients (web + Android) share a c
 
 | Folder | Stack | Tests |
 | ------ | ----- | ----- |
-| [ai-service/](ai-service/) | Python 3.11 + FastAPI + MediaPipe Pose Landmarker | `python tests/test_posture_math.py` |
+| [ai-service/](ai-service/) | Python 3.11 + FastAPI + MediaPipe Pose Landmarker (managed by **uv**) | `uv run python tests/test_posture_math.py` |
 | [web/](web/) | Vite + React 18 + TypeScript + Tailwind + jsPDF | `npm test` (vitest) |
 | [android/](android/) | Kotlin 1.9 + Compose + CameraX + ML Kit Pose | `./gradlew :app:testDebugUnitTest` |
 | [shared/](shared/) | Source-of-truth reference for posture math + brand tokens | – |
@@ -18,13 +18,14 @@ Posture analysis for clinic-style reports. Two clients (web + Android) share a c
 ## Build / test commands (Windows PowerShell)
 
 ```powershell
-# AI service
+# AI service (uses uv — always run Python via `uv run`)
 cd ai-service
-.\.venv\Scripts\python.exe -m app.fetch_model            # one-time model download
+uv sync                                                   # install/update deps from pyproject.toml + uv.lock
+uv run python -m app.fetch_model                          # one-time model download
 $env:PYTHONPATH = "$PWD;$PWD\..\shared"
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
-.\.venv\Scripts\python.exe tests\test_posture_math.py    # unit tests
-.\.venv\Scripts\python.exe tests\smoke.py                # E2E smoke (server must be up)
+uv run python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+uv run python tests\test_posture_math.py                  # unit tests
+uv run python tests\smoke.py                              # E2E smoke (server must be up)
 
 # Web
 npm --prefix web install
@@ -55,8 +56,9 @@ docker compose up --build
 
 ## Pitfalls
 
+- **Always use `uv` to run Python** — never call `.venv\Scripts\python.exe` directly. Use `uv run python ...` for all Python commands and `uv sync` to install dependencies. The `pyproject.toml` and `uv.lock` in `ai-service/` are the source of truth for Python deps.
 - Python 3.13 is the only interpreter on this machine; pin `mediapipe>=0.10.30`. Older versions (`0.10.14` from the original requirements) have no 3.13 wheel.
-- MediaPipe model file (`pose_landmarker.task`, ~9 MB) is not committed — fetch via `python -m app.fetch_model`. The Hugging Face mirrors are best-effort; the Google CDN fallback is the canonical source.
+- MediaPipe model file (`pose_landmarker.task`, ~9 MB) is not committed — fetch via `uv run python -m app.fetch_model`. The Hugging Face mirrors are best-effort; the Google CDN fallback is the canonical source.
 - Vite dev server proxies `/api` to `http://localhost:8000`. If the AI service isn't up, the browser shows network errors.
 - Android Studio's JBR (Java 21) works for Gradle 8.9 + AGP 8.5 + Kotlin 1.9. **Do not** use Compose Compiler Plugin (`org.jetbrains.kotlin.plugin.compose`) — that plugin only exists for Kotlin 2.0+. Use `composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }` instead.
 - The repo has no AVD installed by default; `./gradlew :app:connectedAndroidTest` will fail unless you create one. Stick to unit tests in CI.
