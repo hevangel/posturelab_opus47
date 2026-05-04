@@ -1,0 +1,24 @@
+services:
+  ai:
+    build:
+      context: .
+      dockerfile: ai-service/Dockerfile
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://ai:8000
+    depends_on:
+      ai:
+        condition: service_healthy

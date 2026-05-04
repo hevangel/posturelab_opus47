@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" role="img" aria-label="PostureLab">
+  <!-- Two overlapping arcs evoking posture/spine -->
+  <g fill="none" stroke-width="6" stroke-linecap="round">
+    <path d="M14 50 Q14 22 38 22 Q60 22 60 44 Q60 58 46 58" stroke="#3FA9D6"/>
+    <path d="M30 30 Q54 30 54 52 Q54 70 36 70 Q18 70 18 54" stroke="#1B4F8C"/>
+  </g>
+  <text x="74" y="38" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="22" fill="#1B4F8C" letter-spacing="0.5">Posture</text>
+  <text x="74" y="62" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="22" fill="#3FA9D6" letter-spacing="0.5">Lab</text>
+</svg>
