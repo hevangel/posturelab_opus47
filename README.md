@@ -2,6 +2,8 @@
 
 A posture analysis application inspired by clinical posture reports. Capture front and side photos of a person, run an on-device / local AI pose detection model, and produce a printable PDF posture report.
 
+![PostureLab Web App Screenshot](example/screenshot_web_app.png)
+
 ## Components
 
 | Folder | Description |
